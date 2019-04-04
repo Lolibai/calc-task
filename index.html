@@ -1,0 +1,543 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>React Assignment Mike Shevchenko</title>
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/babel-standalone@6/babel.min.js"
+      crossorigin
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    />
+    <style type="text/css">
+      /* additional styles here */
+      .calc_container {
+        border-radius: 10px;
+        margin: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .calculator {
+        background-color: #fff;
+        width: 500px;
+        height: 400px;
+      }
+      .calc_input {
+        width: 100%;
+        padding: 10px;
+        color: #000;
+      }
+      .actions_container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 10px;
+      }
+      .keyPad {
+        padding: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        height: calc(100% - 106px);
+      }
+      .number-btn {
+        font-size: 50px;
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="root"></div>
+    </div>
+    <script type="text/babel">
+      const ACTIONS = {
+        ADD: 1,
+        SUB: 2,
+        MLT: 3,
+        DVD: 4,
+        EQL: 5,
+        CLR: 6
+      }
+      const CalcInput = ({ value, onChange }) => {
+        return (
+          <input
+            type="text"
+            className="calc_input"
+            disabled
+            onChange={e => onChange(e)}
+            value={value || ''}
+          />
+        )
+      }
+      const Actions = ({ currentAction, onAction, disabled }) => {
+        return (
+          <div className="actions_container">
+            <div className="btn-group" role="group" aria-label="Basic example">
+              <button
+                type="button"
+                disabled={disabled && currentAction !== ACTIONS.ADD}
+                onClick={() => onAction(ACTIONS.ADD)}
+                className={`btn btn-secondary ${
+                  currentAction === ACTIONS.ADD ? 'active' : null
+                }`}
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                disabled={disabled && currentAction !== ACTIONS.SUB}
+                onClick={() => onAction(ACTIONS.SUB)}
+                className={`btn btn-secondary ${
+                  currentAction === ACTIONS.SUB ? 'active' : null
+                }`}
+              >
+                Subscract
+              </button>
+              <button
+                type="button"
+                disabled={disabled && currentAction !== ACTIONS.MLT}
+                onClick={() => onAction(ACTIONS.MLT)}
+                className={`btn btn-secondary ${
+                  currentAction === ACTIONS.MLT ? 'active' : null
+                }`}
+              >
+                Multiply
+              </button>
+              <button
+                type="button"
+                disabled={disabled && currentAction !== ACTIONS.DVD}
+                onClick={() => onAction(ACTIONS.DVD)}
+                className={`btn btn-secondary ${
+                  currentAction === ACTIONS.DVD ? 'active' : null
+                }`}
+              >
+                Divide
+              </button>
+            </div>
+            <div className="btn-group" role="group" aria-label="Clean/Equal">
+              <button
+                type="button"
+                onClick={() => onAction(ACTIONS.CLR)}
+                className="btn btn-secondary"
+              >
+                Clear
+              </button>
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => onAction(ACTIONS.EQL)}
+                className="btn btn-secondary"
+              >
+                Equal
+              </button>
+            </div>
+          </div>
+        )
+      }
+      const KeyPad = ({ onNumber, onBackSpace, disabled }) => {
+        return (
+          <div className="keyPad">
+            <div className="btn-group" role="group" aria-label="7,8,9">
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('7')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                7
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('8')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                8
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('9')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                9
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onBackSpace()}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                &lt;
+              </button>
+            </div>
+            <div className="btn-group" role="group" aria-label="3,4,5,6">
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('3')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                3
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('4')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                4
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('5')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                5
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('6')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                6
+              </button>
+            </div>
+            <div className="btn-group" role="group" aria-label=".,0,1,2">
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('.')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                .
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('0')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                0
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('1')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                1
+              </button>
+              <button
+                disabled={disabled}
+                onClick={() => onNumber('2')}
+                type="button"
+                className="btn btn-secondary number-btn"
+              >
+                2
+              </button>
+            </div>
+          </div>
+        )
+      }
+      class Calculator extends React.Component {
+        state = {
+          expression: '',
+          afterEqual: false,
+          action: 0,
+          disableActions: true
+        }
+
+        isOperator = value => {
+          switch (value) {
+            case '+':
+              return true
+            case '-':
+              return true
+            case '*':
+              return true
+            case '/':
+              return true
+            default:
+              return false
+          }
+        }
+
+        handleLeftRight = (expression, i) => {
+          let sides = { left: [], right: [] }
+          for (let l = i - 1; l >= 0 && !this.isOperator(expression[l]); l--) {
+            sides.left.unshift(expression[l])
+          }
+
+          for (
+            let r = i + 1;
+            r <= expression.length - 1 && !this.isOperator(expression[r]);
+            r++
+          ) {
+            sides.right.push(expression[r])
+          }
+
+          sides.left = sides.left.join('')
+          sides.right = sides.right.join('')
+
+          return sides
+        }
+
+        calculate = expressionMain => {
+          let total = 0
+          let expression = expressionMain
+
+          for (let i = 0; i < expression.length; i++) {
+            switch (expression[i]) {
+              case '*': {
+                let sides = this.handleLeftRight(expression, i)
+                total = total + +sides.left * +sides.right
+                expression = expression.replace(
+                  `${sides.left}*${sides.right}`,
+                  +sides.left * +sides.right
+                )
+                return this.calculate(expression)
+              }
+              case '/': {
+                let sides = this.handleLeftRight(expression, i)
+                total = total + +sides.left / +sides.right
+                expression = expression.replace(
+                  `${sides.left}/${sides.right}`,
+                  +sides.left / +sides.right
+                )
+                return this.calculate(expression)
+              }
+              default:
+                total = +expression
+                break
+            }
+          }
+
+          for (let i = 0; i < expression.length; i++) {
+            switch (expression[i]) {
+              case '+': {
+                let sides = this.handleLeftRight(expression, i)
+                total = total + +sides.left + +sides.right
+                return this.calculate(
+                  expression.replace(
+                    `${sides.left}+${sides.right}`,
+                    +sides.left + +sides.right
+                  )
+                )
+              }
+              case '-': {
+                let sides = this.handleLeftRight(expression, i)
+                if (sides.left !== '') {
+                  total = total + +sides.left - +sides.right
+                  return this.calculate(
+                    expression.replace(
+                      `${sides.left}-${sides.right}`,
+                      +sides.left - +sides.right
+                    )
+                  )
+                } else {
+                  total = total - +sides.right
+                  return +expression
+                }
+              }
+              default:
+                total = +expression
+                break
+            }
+          }
+          return total
+        }
+
+        componentDidMount = () => {
+          this.getExression()
+        }
+
+        handleBackSpace = () => {
+          if (this.state.expression.length > 0) {
+            if (
+              this.isOperator(
+                this.state.expression[this.state.expression.length - 1]
+              )
+            ) {
+              this.setState({ action: 0 })
+            }
+            this.setState(
+              {
+                expression: this.state.expression.substring(
+                  0,
+                  this.state.expression.length - 1
+                )
+              },
+              () => this.saveExpression()
+            )
+          }
+        }
+
+        handleNumberInput = value => {
+          this.handleAfterEqual()
+          if (value !== '.') {
+            this.setState({ disableActions: false })
+          }
+          this.setState({ expression: this.state.expression + value }, () =>
+            this.saveExpression()
+          )
+        }
+
+        handleExpression = () => {
+          return this.calculate(this.state.expression)
+        }
+
+        handleAfterEqual = () => {
+          if (this.state.afterEqual)
+            this.setState({ afterEqual: false, expression: '' })
+        }
+
+        getExression = () => {
+          this.setState(JSON.parse(localStorage.getItem('calc_state')))
+        }
+        saveExpression = action => {
+          localStorage.setItem('calc_state', JSON.stringify(this.state))
+        }
+        removeExpression = () => {
+          localStorage.removeItem('calc_state')
+        }
+
+        onAction = slug => {
+          this.handleAfterEqual()
+          this.setState({ disableActions: true })
+          switch (slug) {
+            case ACTIONS.ADD:
+              this.state.disableActions
+                ? null
+                : this.setState(
+                    {
+                      action: ACTIONS.ADD,
+                      expression: this.state.expression + '+'
+                    },
+                    () => this.saveExpression(ACTIONS.ADD)
+                  )
+              break
+            case ACTIONS.SUB:
+              this.state.disableActions
+                ? null
+                : this.setState(
+                    {
+                      action: ACTIONS.SUB,
+                      expression: this.state.expression + '-'
+                    },
+                    () => this.saveExpression(ACTIONS.SUB)
+                  )
+
+              break
+            case ACTIONS.MLT:
+              this.state.disableActions
+                ? null
+                : this.setState(
+                    {
+                      action: ACTIONS.MLT,
+                      expression: this.state.expression + '*'
+                    },
+                    () => this.saveExpression(ACTIONS.MLT)
+                  )
+              break
+            case ACTIONS.DVD:
+              this.state.disableActions
+                ? null
+                : this.setState(
+                    {
+                      action: ACTIONS.DVD,
+                      expression: this.state.expression + '/'
+                    },
+                    () => this.saveExpression(ACTIONS.DVD)
+                  )
+              break
+            case ACTIONS.EQL:
+              let result = this.handleExpression()
+
+              this.setState(
+                {
+                  expression: result,
+                  afterEqual: true,
+                  action: 0,
+                  disableActions: false
+                },
+                () => this.removeExpression()
+              )
+              if (result === 0) {
+                this.setState({
+                  expression: '',
+                  disableActions: true,
+                  action: 0,
+                  afterEqual: false
+                })
+              }
+              if (result < 0) {
+                this.setState({
+                  disableActions: true,
+                  action: 0,
+                  afterEqual: false,
+                  disableKeyPad: true
+                })
+              }
+              break
+            case ACTIONS.CLR:
+              this.setState(
+                {
+                  expression: '',
+                  action: 0,
+                  disableKeyPad: false
+                },
+                () => this.removeExpression()
+              )
+              break
+            default:
+              break
+          }
+        }
+
+        render() {
+          return (
+            <div className="jumbotron calc_container">
+              <div className="calculator">
+                <CalcInput
+                  onChange={this.handleInput}
+                  value={this.state.expression}
+                />
+                <Actions
+                  disabled={this.state.disableActions}
+                  currentAction={this.state.action}
+                  onAction={this.onAction}
+                />
+                <KeyPad
+                  onNumber={this.handleNumberInput}
+                  onBackSpace={this.handleBackSpace}
+                  disabled={this.state.disableKeyPad}
+                />
+              </div>
+            </div>
+          )
+        }
+      }
+      class Assignment extends React.Component {
+        render() {
+          return <Calculator />
+        }
+      }
+      ReactDOM.render(<Assignment />, document.getElementById('root'))
+    </script>
+  </body>
+</html>
